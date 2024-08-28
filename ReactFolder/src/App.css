@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#root {
+  text-align: center;
+  --bg-color-blue: #0581c9ee;
+}
+
+body {
+  overflow: scroll;
+}
+
+th {
+  background-color: var(--bg-color-blue) !important; 
+  border-width: 0 !important;
+}
+
+
+.table {
+  max-width: 95%;
+  margin: 3rem auto;
+  overflow: scroll;
+}
+
+.clickable {
+  user-select: none;
+  cursor: pointer;
+  transition: opacity 0.4s ease;
+}
+.clickable:hover {
+  opacity: 0.75;
+}
+.searchBox {
+  max-width: 95%;
+  margin: auto;
+  padding: 8px 0.5rem 0.5rem 0.5rem;
+  font-weight: bold;
+  background-color: var(--bg-color-blue); 
+}
+
+th.custom-width-num {
+  width: 40px; 
+}
+th.custom-width-pub {
+  width: 120px; 
+}
+th.custom-width-link {
+  width: 100px; 
+}
+th.custom-width-thumb {
+  width: 500px; /* Intentially too small, making it squeeze img */
+}
+th.custom-width-add {
+  width: 100px;
+}
+
+td.thumb-col {
+  padding-bottom: 3px;
+}
+
+th > span, td > span {
+  vertical-align: middle;
+}
+
+svg {
+  max-width: 25px;
+}
+svg.asc {
+  transform: rotate(180deg);
+}
+
+.w-95-100 {
+  width: 95%;
+}
