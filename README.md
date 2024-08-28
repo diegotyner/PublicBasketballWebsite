@@ -11,7 +11,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/diegotyner/YT-Playlist-Website">
+  <a href="https://github.com/diegotyner/PublicBasketballWebsite">
     <img src="reactfolder/public/assets/Ball_Favicon.png" alt="Logo" width="50" height="50">
   </a>
 
@@ -22,9 +22,9 @@
     <br />
     <a href="https://public-basketball-website.vercel.app/">View Demo</a>
     ·
-    <a href="https://github.com/diegotyner/YT-Playlist-Website/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/diegotyner/PublicBasketballWebsite/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/diegotyner/YT-Playlist-Website/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/diegotyner/PublicBasketballWebsite/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
