@@ -12,7 +12,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/diegotyner/PublicBasketballWebsite">
-    <img src="reactfolder/public/assets/Ball_Favicon.png" alt="Logo" width="50" height="50">
+    <img src="https://github.com/diegotyner/PublicBasketballWebsite/blob/master/ReactFolder/public/assets/Ball_Favicon.png?raw=true" alt="Logo" width="50" height="50">
   </a>
 
 <h3 align="center">Basketball Video Website</h3>
