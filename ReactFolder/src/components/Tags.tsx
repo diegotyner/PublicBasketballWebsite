@@ -88,7 +88,7 @@ const Tags = ({ video }: VideoProps) => {
 
   const TAGS = [
     "SUNS",
-    "PEL",
+    "PELS",
     "MAVS",
     "JAZZ",
     "WARR",
@@ -104,7 +104,6 @@ const Tags = ({ video }: VideoProps) => {
     "CELT",
     "NETS",
   ];
-  
   const LOGOS = [
     "phoenix-suns",
     "orleans-pelicans",
@@ -124,22 +123,22 @@ const Tags = ({ video }: VideoProps) => {
     "brooklyn-nets",
   ];
   const COLORS = [
-    "bg-orange-500",
-    "bg-teal-800",
-    "bg-blue-600",
-    "bg-gray-800",
+    "bg-orange-600",
+    "bg-blue-900",
+    "bg-sky-500",
+    "bg-sky-900",
     "bg-blue-500",
-    "bg-yellow-700",
+    "bg-yellow-600",
+    "bg-slate-400",
     "bg-teal-600",
-    "bg-teal-600",
-    "bg-red-600",
-    "bg-red-400",
-    "bg-blue-400",
-    "bg-red-800",
-    "bg-green-700",
+    "bg-rose-600",
     "bg-red-500",
-    "bg-green-300",
-    "bg-gray-800",
+    "bg-blue-400",
+    "bg-rose-700",
+    "bg-green-700",
+    "bg-rose-500",
+    "bg-green-400",
+    "bg-neutral-400",
   ];
 
 
@@ -148,14 +147,14 @@ const Tags = ({ video }: VideoProps) => {
       {TAGS.map((tag, index) => (
         <div
           key={index}
-          className={`w-full pt-2 pb-3 rounded-lg px-2 text-sm ${COLORS[index]} ${
+          className={`w-full py-2 flex flex-col gap-1 font-semibold rounded-lg px-1 text-sm ${COLORS[index]} ${
             video.Tags[index] ? "bg-opacity-90" : "hidden"
           }`}
         >
           {tag}
-          {(index == 13 || index == 8) 
-            ? <AspectRatio.Root ratio={1/1}><img className="h-full w-full object-contain"  src={`nba_logos/${LOGOS[index]}.png`} /></AspectRatio.Root> 
-            : <AspectRatio.Root ratio={1/1}><img className="h-full w-full object-contain"  src={`nba_logos/${LOGOS[index]}.svg`} /></AspectRatio.Root>
+          {(index == 13 || index == 8) // I couldnt find good svgs for heat and bulls is what this is saying 
+            ? <AspectRatio.Root ratio={1/1} ><img className="h-full w-full object-contain"  src={`nba_logos/${LOGOS[index]}.png`} /></AspectRatio.Root> 
+            : <AspectRatio.Root ratio={1/1} ><img className="h-full w-full object-contain"  src={`nba_logos/${LOGOS[index]}.svg`} /></AspectRatio.Root>
           }
         </div> 
       ))}

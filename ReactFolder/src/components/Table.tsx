@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import * as AspectRatio from "@radix-ui/react-aspect-ratio";
+
 import Caret from "./Caret";
 import Form from "./Form";
 import Tags from "./Tags";
@@ -58,7 +60,14 @@ const Table = ({ data, setResponseData }: TableProps) => {
   };
   return (
     <>
-      {popUp && <Form type={popUp} callback={setPopUp} video={video} setResponseData={setResponseData}/>}
+      {popUp && (
+        <Form
+          type={popUp}
+          callback={setPopUp}
+          video={video}
+          setResponseData={setResponseData}
+        />
+      )}
 
       <table className="table table-bordered align-middle">
         <thead className="table-dark sticky top-[69px] z-10">
@@ -108,23 +117,29 @@ const Table = ({ data, setResponseData }: TableProps) => {
             <tr key={item._id}>
               <td className="fw-bold">{index + 1}</td>
               <td>
-                <Tags video={item}/>               
+                <Tags video={item} />
                 {/* <Tags video={item} setResponseData={setResponseData}/>                */}
               </td>
               {/* Thumbnail is 480x360 */}
               <td className="thumb-col">
-                <img
-                  src={item.Thumbnail_URL}
-                  alt="Thumbnail of YT vid"
-                  className="clickable"
-                  onClick={() => window.open(item.Video_Link, "_blank")}
-                />
-                <div className="py-1">
+                <div className="m-2">
+                  <AspectRatio.Root ratio={16 / 9} className="border-3 border-gray-800">
+                    <img
+                      className="h-full w-full object-cover clickable"
+                      src={item.Thumbnail_URL}
+                      alt="Thumbnail of YT vid"
+                      onClick={() => window.open(item.Video_Link, "_blank")} 
+                    />
+                  </AspectRatio.Root>
+                </div>
+                <div>
                   <span>{item.Title}</span>
                 </div>
               </td>
               <td>{item.Published_At}</td>
-              <td>{item.Description}</td>
+              <td className="whitespace-pre-wrap break-words text-left p-4">
+                {item.Description}
+              </td>
               <td>
                 <div className="flex justify-center">
                   <img

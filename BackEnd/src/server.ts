@@ -55,7 +55,7 @@ app.get('/api/data', async (req: Request, res: Response) => {
   const videoList = videoListDoc?.videoList
   console.log("Length: ", videoList?.length)
   console.timeEnd('API Access')
-  res.json(videoList);
+  res.status(200).json(videoList);
 });
 
 
@@ -259,7 +259,7 @@ app.put('/api/edit-tags', async (req: Request, res: Response) => {
 // });
 
 /* 
-  Personal helper to add tags automatically
+  Personal helper to add tags automatically. Actually worked first try crazily enough.
 */
 // app.get('/api/autoTags', async (req: Request, res: Response) => { 
 //   console.log("[EDIT] / ------")
@@ -281,7 +281,6 @@ app.put('/api/edit-tags', async (req: Request, res: Response) => {
 //     "celtics",
 //     "nets",
 //   ];
-  
 //   try {
 //     const videoListDoc: IVideoList | null = await VideoList.findOne().exec();
 //     const videoList = videoListDoc?.videoList;
@@ -307,7 +306,7 @@ app.put('/api/edit-tags', async (req: Request, res: Response) => {
 
 
 /*
-  This api route is used intially to push JSON data to mongoDB
+  This api route is used intially to push JSON data to mongoDB. The jsonData interface is based on the way my website gives back the json (which is the way yt gives it)
 */
 // interface jsonData {
 //   metadata: {
@@ -326,9 +325,9 @@ app.put('/api/edit-tags', async (req: Request, res: Response) => {
 //         high: {url: string}, 
 //         standard: {url: string}, 
 //         maxres: {url: string}, // 16:9
-//     },
-//     position: number,
-//     resourceId: { videoId: string },
+//       },
+//       position: number,
+//       resourceId: { videoId: string },
 //   },
 //   }[],
 // }
