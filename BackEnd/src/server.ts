@@ -6,7 +6,7 @@ import * as dotenv from 'dotenv';
 import { Video, VideoList, IVideo, IVideoList } from './models/schema';
 import { DeletedVideo } from './models/deletedVideo';
 
-// import data from '../YT_Basketball.json';
+// import data from '../2022_nba_playoffs_playlist.json';
 
 dotenv.config();
 const app = express();
@@ -61,10 +61,6 @@ app.get('/api/data', async (req: Request, res: Response) => {
 
 app.delete('/api/delete', async (req: Request, res: Response) => {
   console.log("[DELETE] / ------");
-  const dbURI_DELETED = process.env.DB_URI_DELETED;
-  const dbDELETED = mongoose.createConnection(dbURI_DELETED as string);
-  dbDELETED.on('error', console.error.bind(console, 'connection error:'));
-
   console.log(req.body)
   const { vidId } = req.body
   if (!vidId) {
@@ -95,7 +91,7 @@ app.delete('/api/delete', async (req: Request, res: Response) => {
       Tags: deletedVideo.Tags,
     });
     await deletedVideoModel.save();
-    res.status(200).json({ message: 'Video deleted successfully' });
+    res.status(200).json({ videoList });
   } catch (error) {
     console.error(error);
     res.status(500).send('An error occurred');
@@ -104,17 +100,16 @@ app.delete('/api/delete', async (req: Request, res: Response) => {
 
 
 app.post('/api/add', async (req: Request, res: Response) => {
-  console.log("[POST] / ------")
+  console.log("[POST] / Add / ------")
   console.log(req.body)
-  const { videoLink, title, publishedAt, thumbnailUrl, description, tag} = req.body;
-  if (!videoLink || !title || !publishedAt || !thumbnailUrl || !description) {
+  const { videoLink, title, publishedAt, thumbnailUrl, description, tags} = req.body;
+  if (!videoLink || !title || !publishedAt || !thumbnailUrl || !description || !tags) {
     console.log("Incomplete Request")
     return res.status(400).send('All fields are required');
   }
   try {
     let videoListDoc: IVideoList | null = await VideoList.findOne().exec()
     const position = videoListDoc ? videoListDoc.videoList.length : 0;
-    const tagArray = Array.from({ length: 5 }, (_, i) => i === tag);
     const vid = new Video({
       Video_Link: videoLink,
       Title: title,
@@ -122,7 +117,7 @@ app.post('/api/add', async (req: Request, res: Response) => {
       Thumbnail_URL: thumbnailUrl,
       Description: description,
       Position: position,
-      Tags: tagArray,
+      Tags: tags,
     })
     console.log(vid)
 
@@ -139,7 +134,7 @@ app.post('/api/add', async (req: Request, res: Response) => {
       newList = videoListDoc
       console.log("Video saved to existing list: ", vid)
     }
-    res.send(newList)
+    res.status(200).json({ videoList: newList.videoList });
   } catch (error) {
     console.error(error);
     res.status(500).send('An error occurred'); 
@@ -147,10 +142,10 @@ app.post('/api/add', async (req: Request, res: Response) => {
 });
 
 app.put('/api/edit', async (req: Request, res: Response) => {
-  console.log("[PUT] / ------")
+  console.log("[PUT] / Edit /  ------")
   console.log(req.body)
-  const { videoLink, title, publishedAt, thumbnailUrl, description, vidId, tag } = req.body;
-  if (!videoLink || !title || !publishedAt || !thumbnailUrl || !description || !vidId) {
+  const { videoLink, title, publishedAt, thumbnailUrl, description, vidId, tags } = req.body;
+  if (!videoLink || !title || !publishedAt || !thumbnailUrl || !description || !vidId || !tags) {
     console.log("Incomplete Request")
     return res.status(400).send('All fields are required');
   }
@@ -165,20 +160,19 @@ app.put('/api/edit', async (req: Request, res: Response) => {
     if (videoIndex === -1) {
       return res.status(404).send('Video not found');
     }
-    const tagArray = Array.from({ length: 5 }, (_, i) => i === tag);
 
     videoList[videoIndex].Video_Link = videoLink;
     videoList[videoIndex].Title = title;
     videoList[videoIndex].Published_At = publishedAt;
     videoList[videoIndex].Thumbnail_URL = thumbnailUrl;
     videoList[videoIndex].Description = description;
-    videoList[videoIndex].Tags = tagArray;
+    videoList[videoIndex].Tags = tags;
 
     videoList.sort((a,b) => videoDateSort(a, b));
     videoList.forEach((item, index) => item.Position = index);
     
     await videoListDoc.save();
-    res.status(200).json({ message: 'Video updated successfully' });
+    res.status(200).json({ videoList });
   } catch (error) {
     console.error(error);
     res.status(500).send('An error occurred');
@@ -186,7 +180,7 @@ app.put('/api/edit', async (req: Request, res: Response) => {
 });
 
 app.put('/api/edit-tags', async (req: Request, res: Response) => { 
-  console.log("[PUT] / ------")
+  console.log("[PUT] / Edit Tags / ------")
   console.log(req.body)
   const { vidId, Tags } = req.body;
   if (!vidId || !Tags) {
@@ -214,6 +208,36 @@ app.put('/api/edit-tags', async (req: Request, res: Response) => {
 });
 
 
+
+
+/*  
+  Helper function to shorten date from long UTC
+*/
+// app.get('/api/shortenDate', async (req: Request, res: Response) => { 
+//   try {
+//     const videoListDoc: IVideoList | null = await VideoList.findOne().exec();
+//     const videoList = videoListDoc?.videoList;
+//     if (!videoList) {
+//       return res.status(404).send('Video list not found');
+//     }
+
+//     videoList.forEach((item) => {
+//       const pureDate = new Date(item.Published_At).toLocaleDateString('en-us');
+//       item.Published_At = pureDate;
+//       console.log(item)
+//     })
+//     await videoListDoc.save();
+//     res.status(200).json({ message: 'Video updated successfully' });
+//   } catch (error) {
+//     console.log(error)
+//     res.status(500).send('An error occurred with updating dates');
+//   }
+// });
+
+
+/*  
+  Helper function to reassign tags to correct length
+*/
 // app.get('/api/addTags', async (req: Request, res: Response) => { 
 //   console.log("[EDIT] / ------")
   
@@ -224,7 +248,7 @@ app.put('/api/edit-tags', async (req: Request, res: Response) => {
 //       return res.status(404).send('Video list not found');
 //     }
 
-//     videoList.forEach((item) => { item.Tags = [false, false, false, false, false]; });
+//     videoList.forEach((item) => { item.Tags = new Array(16).fill(false); }); //16 teams
     
 //     await videoListDoc.save();
 //     res.status(200).json({ message: 'Video updated successfully' });
@@ -234,15 +258,89 @@ app.put('/api/edit-tags', async (req: Request, res: Response) => {
 //   };
 // });
 
-// app.get('/pushing2mongoList', async (req: Request, res: Response) => {
-//   const videoList: IVideo[] = data.map((item, index) => {
+/* 
+  Personal helper to add tags automatically
+*/
+// app.get('/api/autoTags', async (req: Request, res: Response) => { 
+//   console.log("[EDIT] / ------")
+//   const TAGS = [
+//     "suns",
+//     "pelicans",
+//     "mavericks",
+//     "jazz",
+//     "warriors",
+//     "nuggets",
+//     "grizzlies",
+//     "timberwolves",
+//     "heat",
+//     "hawks",
+//     "76ers",
+//     "raptors",
+//     "bucks",
+//     "bulls",
+//     "celtics",
+//     "nets",
+//   ];
+  
+//   try {
+//     const videoListDoc: IVideoList | null = await VideoList.findOne().exec();
+//     const videoList = videoListDoc?.videoList;
+//     if (!videoList) {
+//       return res.status(404).send('Video list not found');
+//     }
+
+//     videoList.forEach((item) => { 
+//       const title = item.Title.toLowerCase();
+//       item.Tags = TAGS.map((tag) => title.includes(tag));
+//       if (item.Tags.filter(Boolean).length != 2) console.log(item);
+//     }); // This code will create tags based on whether the team is in the title 
+    
+//     await videoListDoc.save();
+//     res.status(200).json({ message: 'Video updated successfully' });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('An error occurred');
+//   };
+// });
+
+
+
+
+/*
+  This api route is used intially to push JSON data to mongoDB
+*/
+// interface jsonData {
+//   metadata: {
+//     title: string,
+//     code: string, // more too but I don't plan on using it here
+//   },
+//   items: {
+//     id: string,
+//     snippet: {
+//       publishedAt: string,
+//       title: string,
+//       description: string,
+//       thumbnails: { 
+//         default: {url: string}, // 16:9 
+//         medium: {url: string}, 
+//         high: {url: string}, 
+//         standard: {url: string}, 
+//         maxres: {url: string}, // 16:9
+//     },
+//     position: number,
+//     resourceId: { videoId: string },
+//   },
+//   }[],
+// }
+// app.get('/api/pushing2mongoList', async (req: Request, res: Response) => {
+//   const videoList: IVideo[] = (data as jsonData).items.map((item, index) => {
 //     const vid = new Video({
-//       Video_Link: item.Video_Link,
-//       Title: item.Title,
-//       Published_At: item.Published_At,
-//       Thumbnail_URL: item.Thumbnail_URL,
-//       Description: item.Description,
-//       Position: index
+//       Video_Link: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}&list=${data.metadata.code}`,
+//       Title: item.snippet.title,
+//       Published_At: item.snippet.publishedAt,
+//       Thumbnail_URL: item.snippet.thumbnails.high.url,
+//       Description: item.snippet.description,
+//       Position: index,
 //     });
 //     console.log(vid)
 //     return vid;

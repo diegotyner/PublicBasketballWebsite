@@ -15,10 +15,9 @@ interface Video {
 }
 interface TableProps {
   data: Video[];
-  // setResponseData: React.Dispatch<React.SetStateAction<Video[] | null>>;
+  setResponseData: React.Dispatch<React.SetStateAction<Video[] | null>>;
 }
-const Table = ({ data }: TableProps) => {
-// const Table = ({ data, setResponseData }: TableProps) => {
+const Table = ({ data, setResponseData }: TableProps) => {
   const [sort, setSort] = useState<"asc" | "desc">("desc");
   const [sortedData, setSortedData] = useState([...data]);
   const [popUp, setPopUp] = useState("");
@@ -59,7 +58,7 @@ const Table = ({ data }: TableProps) => {
   };
   return (
     <>
-      {popUp && <Form type={popUp} callback={setPopUp} video={video} />}
+      {popUp && <Form type={popUp} callback={setPopUp} video={video} setResponseData={setResponseData}/>}
 
       <table className="table table-bordered align-middle">
         <thead className="table-dark sticky top-[69px] z-10">
@@ -67,7 +66,7 @@ const Table = ({ data }: TableProps) => {
             <th className="custom-width-num">
               <span>#</span>
             </th>
-            <th className="w-[70px]">
+            <th className="w-[80px]">
               <span>Tags</span>
             </th>
             <th className="custom-width-thumb">
@@ -109,8 +108,8 @@ const Table = ({ data }: TableProps) => {
             <tr key={item._id}>
               <td className="fw-bold">{index + 1}</td>
               <td>
-                <Tags video={item} />
-                {/* <Tags video={item} setResponseData={setResponseData}/> */}
+                <Tags video={item}/>               
+                {/* <Tags video={item} setResponseData={setResponseData}/>                */}
               </td>
               {/* Thumbnail is 480x360 */}
               <td className="thumb-col">

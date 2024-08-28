@@ -21,7 +21,7 @@ interface Video { // For passing props to Table (through filteredData)
 function App() {
   const [responseData, setResponseData] = useState<Video[] | null>(null)
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [tagFilter, setTagFilter] = useState<boolean[]>([false, false, false, false, false, false, true])
+  const [tagFilter, setTagFilter] = useState<boolean[]>(new Array(16).fill(false))
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,13 +38,11 @@ function App() {
   }, []);
 
   const matchesFilters = (tags: boolean[]) => {
-    if (tagFilter[6]) return true;
-    if (tagFilter[5]) return (tags.every(value => value == false)) ? true : false;
-    for (let i = 0; i < 5; i++) { 
-      if (tagFilter[i] && tags[i]) return true;
+    for (let i = 0; i < 16; i++) { 
+      if (tagFilter[i] && !tags[i]) return false;
     } // if they all fit filter...
      
-    return false;
+    return true;
   }
 
   const filteredData = responseData?.filter((item: Video) =>
@@ -58,8 +56,8 @@ function App() {
       {!responseData ? <p>Loading data... (First loadup of backend server tends to be a bit slow, 5 seconds expected)</p> : (
         <>
           <SearchBox searchQuery={searchQuery} setSearchQuery={setSearchQuery} tagFilter={tagFilter} setTagFilter={setTagFilter} />
-          <Table data={filteredData} />
-          {/* <Table data={filteredData} setResponseData={setResponseData}/> */}
+          <div className='w-full flex justify-center items-center my-4'><img src='nba_logos/bracket.png'/></div>
+          <Table data={filteredData} setResponseData={setResponseData}/>
         </>
       )}
     </>

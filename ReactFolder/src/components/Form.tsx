@@ -7,16 +7,18 @@ interface Video {
   Published_At: string;
   Thumbnail_URL: string;
   Description: string;
-  _id?: any;
   Tags: boolean[];
+  Position: number;
+  _id: string;
 }
 
 interface FormProps {
   video?: Video;
   type: string;
   callback: (value: string) => void;
+  setResponseData: React.Dispatch<React.SetStateAction<Video[] | null>>;
 }
-const Form = ( {video, type, callback}: FormProps) => {
+const Form = ( {video, type, callback, setResponseData}: FormProps) => {
   // Better practice would be to do this, but I don't want to refactor the code and break something
   // const [form, setForm] = useState({
   //   Video_Link: video?.Video_Link,
@@ -30,9 +32,7 @@ const Form = ( {video, type, callback}: FormProps) => {
   const [publishedAt, setPublishedAt] = useState(video?.Published_At || '');
   const [thumbnailUrl, setThumbnailUrl] = useState(video?.Thumbnail_URL || '');
   const [description, setDescription] = useState(video?.Description || '');
-  const [tag, setTag] = useState(() => {
-    return video?.Tags.findIndex((element) => element === true) || -1;
-  }); // Finds the index of first true
+  const [tags, setTags] = useState( video?.Tags || new Array(16).fill(false) ); // Finds the index of first true
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -59,7 +59,8 @@ const Form = ( {video, type, callback}: FormProps) => {
 
       const data = await response.json();
       console.log('Success:', data);
-      window.location.reload();
+      setResponseData(data.videoList);
+      callback('');
     } catch (error) {
       alert("Submission Failed")
       console.error('Error:', error);
@@ -74,10 +75,12 @@ const Form = ( {video, type, callback}: FormProps) => {
       title,
       publishedAt,
       description,
-      tag,
+      tags,
       ...(video?._id && { vidId: video._id })
     };
     console.log(JSON.stringify(formData))
+    
+
     try {
       const API_URL = import.meta.env.VITE_API_URL
       const method = type === "Add" ? "POST" : "PUT";
@@ -96,7 +99,8 @@ const Form = ( {video, type, callback}: FormProps) => {
 
       const data = await response.json();
       console.log('Success:', data);
-      window.location.reload();
+      setResponseData(data.videoList);
+      callback('');
     } catch (error) {
       alert("Submission Failed")
       console.error('Error:', error);
@@ -105,24 +109,48 @@ const Form = ( {video, type, callback}: FormProps) => {
 
 
 
-  const TAGS = ["Senior", "Senior Summer", "Junior", "Junior Summer", "Sophomore"];
+  const TAGS = [
+    "Suns",
+    "Pels",
+    "Mavs",
+    "Jazz",
+    "Warr",
+    "Nuggs",
+    "Grizs",
+    "Timbs",
+    "Heat",
+    "Hawks",
+    "76ers",
+    "Rapts",
+    "Bucks",
+    "Bulls",
+    "Celts",
+    "Nets",
+  ];
   const COLORS = [
-    "bg-yellow-500",
-    "bg-orange-600",
-    "bg-rose-600",
-    "bg-purple-600",
+    "bg-orange-500",
+    "bg-teal-800",
+    "bg-blue-600",
+    "bg-gray-800",
     "bg-blue-500",
+    "bg-yellow-700",
+    "bg-teal-600",
+    "bg-teal-600",
+    "bg-red-600",
+    "bg-red-400",
+    "bg-blue-400",
+    "bg-red-800",
+    "bg-green-700",
+    "bg-red-500",
+    "bg-green-300",
+    "bg-gray-800",
   ];
 
+
+
   const handleTagClick = (index: number) => {
-    console.log(tag)
-    setTag(index);
+    setTags(prev => prev.map((item, i) => (i !== index ? item : !item)));
   };
-
-
-
-
-
 
 
   return (
@@ -170,13 +198,13 @@ const Form = ( {video, type, callback}: FormProps) => {
             onChange={(e) => setDescription(e.target.value)}
           />
 
-          <div className="w-full flex justify-between gap-2 mt-3">
+          <div className="w-full flex flex-wrap justify-between gap-2 mt-3">
             {TAGS.map((item, index) => (
               <button
                 type="button"
                 key={index}
-                className={`w-1/5 py-[1px] rounded-lg font-semibold ${COLORS[index]} ${
-                  (tag === index) ? "" : "bg-opacity-25"
+                className={`w-1/5 py-[1px] rounded-lg ${COLORS[index]} ${
+                  (tags[index]) ? "font-bold" : "bg-opacity-15 font-semibold"
                 }`}
                 onClick={() => handleTagClick(index)}
               >
@@ -188,7 +216,7 @@ const Form = ( {video, type, callback}: FormProps) => {
           <div className="w-auto m-3 mb-0 flex justify-between">
             {video && <button type="button" className='clickable bg-red-400 py-1 px-2 rounded-2xl border-1 border-gray-700' onClick={handleDelete}>Delete</button>}
             <div className="flex gap-6">
-              <input className='clickable bg-blue-400 py-1 px-2 rounded-2xl border-1 border-gray-700' type="submit" value="Submit" disabled={!videoLink || !thumbnailUrl || !title || !publishedAt || !description || (tag < 0 || tag > 4)} />
+              <input className='clickable bg-blue-400 py-1 px-2 rounded-2xl border-1 border-gray-700' type="submit" value="Submit" disabled={!videoLink || !thumbnailUrl || !title || !publishedAt || !description || !tags} />
               <button type="button" className='clickable py-1 px-2 rounded-2xl border-1 border-gray-700' onClick={() => callback('')}>Cancel</button>
             </div>
           </div>

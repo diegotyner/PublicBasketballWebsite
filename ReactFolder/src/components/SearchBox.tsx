@@ -10,12 +10,29 @@ const SearchBox = ({ searchQuery, setSearchQuery, tagFilter, setTagFilter }: Sea
 
   const handleClick = (index: number) => {
     setTagFilter((prev: boolean[]) => 
-      prev.map((_, i) => (i !== index ? false : true))
+      prev.map((item, i) => (i !== index ? item : !item))
     );
   };
 
 
-  const TAGS = ["Senior", "Senior Summer", "Junior", "Junior Summer", "Sophomore", "No Tag", "All"];
+  const TAGS = [
+    "Suns",
+    "Pelicans",
+    "Mavericks",
+    "Jazz",
+    "Warriors",
+    "Nuggets",
+    "Grizzlies",
+    "Timberwolves",
+    "Heat",
+    "Hawks",
+    "76ers",
+    "Raptors",
+    "Bucks",
+    "Bulls",
+    "Celtics",
+    "Nets",
+  ];
 
   return (
     <>
@@ -38,7 +55,7 @@ const SearchBox = ({ searchQuery, setSearchQuery, tagFilter, setTagFilter }: Sea
           </Popover.Trigger>
           <Popover.Portal>
             <Popover.Content
-              className="z-20 rounded p-4 w-[260px] bg-white"
+              className="z-20 rounded p-4 w-[260px] bg-white border-2 border-gray-700"
               sideOffset={5}
             >
               <div className="flex flex-col gap-2.5">
