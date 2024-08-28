@@ -125,6 +125,7 @@ const Table = ({ data, setResponseData }: TableProps) => {
                 <div className="m-2">
                   <AspectRatio.Root ratio={16 / 9} className="border-3 border-gray-800">
                     <img
+                      loading="lazy"
                       className="h-full w-full object-cover clickable"
                       src={item.Thumbnail_URL}
                       alt="Thumbnail of YT vid"
