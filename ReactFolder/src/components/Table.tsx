@@ -122,8 +122,8 @@ const Table = ({ data, setResponseData }: TableProps) => {
               </td>
               {/* Thumbnail is 480x360 */}
               <td className="thumb-col">
-                <div className="m-2">
-                  <AspectRatio.Root ratio={16 / 9} className="border-3 border-gray-800">
+                <div className="m-2 rounded-xl overflow-hidden border-3 border-gray-800">
+                  <AspectRatio.Root ratio={16 / 9} >
                     <img
                       loading="lazy"
                       className="h-full w-full object-cover clickable"
